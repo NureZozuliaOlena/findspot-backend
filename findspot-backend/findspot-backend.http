@@ -1,0 +1,6 @@
+@findspot_backend_HostAddress = http://localhost:5271
+
+GET {{findspot_backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

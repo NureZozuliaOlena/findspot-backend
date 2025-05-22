@@ -2,6 +2,7 @@
 using findspot_backend.Models;
 using findspot_backend.Models.DTO;
 using findspot_backend.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -41,6 +42,7 @@ namespace findspot_backend.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public IActionResult Create([FromBody] TouristObjectDto dto)
         {
             if (!ModelState.IsValid)
@@ -55,6 +57,7 @@ namespace findspot_backend.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Update(Guid id, [FromBody] TouristObjectDto dto)
         {
             if (!ModelState.IsValid)
@@ -73,6 +76,7 @@ namespace findspot_backend.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(Guid id)
         {
             var success = _repository.Delete(id);

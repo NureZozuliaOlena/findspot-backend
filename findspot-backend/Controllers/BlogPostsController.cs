@@ -2,6 +2,7 @@
 using findspot_backend.Models;
 using findspot_backend.Models.DTO;
 using findspot_backend.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace findspot_backend.Controllers
@@ -49,6 +50,7 @@ namespace findspot_backend.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public IActionResult Create([FromBody] BlogPostDto blogPostDto)
         {
             if (!ModelState.IsValid)
@@ -74,6 +76,7 @@ namespace findspot_backend.Controllers
         }
 
         [HttpPut("{id:guid}")]
+        [Authorize]
         public IActionResult Update(Guid id, [FromBody] BlogPostDto blogPostDto)
         {
             if (!ModelState.IsValid)
@@ -110,6 +113,7 @@ namespace findspot_backend.Controllers
         }
 
         [HttpDelete("{id:guid}")]
+        [Authorize]
         public IActionResult Delete(Guid id)
         {
             var deleted = _blogPostRepository.Delete(id);

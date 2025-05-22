@@ -1,4 +1,6 @@
-﻿namespace findspot_backend.Models.DTO
+﻿using System.Text.Json.Serialization;
+
+namespace findspot_backend.Models.DTO
 {
     public class BlogPostDto
     {
@@ -9,10 +11,18 @@
         public string FeaturedImageUrl { get; set; }
         public DateTime PublishedDate { get; set; }
         public Guid UserId { get; set; }
+
+        [JsonIgnore]
         public ICollection<TagDto>? Tags { get; set; }
+
+        [JsonIgnore]
         public ICollection<ReviewDto>? Reviews { get; set; }
         public Guid? TouristObjectId { get; set; }
+
+        [JsonIgnore]
         public TouristObjectDto? TouristObject { get; set; }
+
+        [JsonIgnore]
         public ICollection<UserBlogPostDto>? UserBlogPosts { get; set; }
     }
 }

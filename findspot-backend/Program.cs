@@ -42,6 +42,7 @@ namespace findspot_backend
 
             var app = builder.Build();
 
+            ApplyMigrations();
             SeedDataBase();
 
             app.UseHttpsRedirection();
@@ -57,6 +58,13 @@ namespace findspot_backend
             app.MapControllers();
 
             app.Run();
+
+            void ApplyMigrations()
+            {
+                using var scope = app.Services.CreateScope();
+                var dbContext = scope.ServiceProvider.GetRequiredService<FindSpotDbContext>();
+                dbContext.Database.Migrate();
+            }
 
             void SeedDataBase()
             {

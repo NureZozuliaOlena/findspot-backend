@@ -40,7 +40,21 @@ namespace findspot_backend
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowFrontend",
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:5173")
+                              .AllowAnyHeader()
+                              .AllowAnyMethod()
+                              .AllowCredentials();
+                    });
+            });
+
             var app = builder.Build();
+
+            app.UseCors("AllowFrontend");
 
             ApplyMigrations();
             SeedDataBase();

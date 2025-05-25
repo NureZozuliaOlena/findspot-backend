@@ -29,7 +29,7 @@ namespace findspot_backend.Controllers
 
             var user = new User
             {
-                UserName = model.Email,
+                UserName = model.UserName,
                 Email = model.Email
             };
 
@@ -68,6 +68,17 @@ namespace findspot_backend.Controllers
         {
             await _signInManager.SignOutAsync();
             return Ok(new { message = "Logged out" });
+        }
+
+        [HttpGet("status")]
+        public IActionResult Status()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                return Ok(new { isLoggedIn = true, email = User.Identity.Name });
+            }
+
+            return Ok(new { isLoggedIn = false });
         }
     }
 }

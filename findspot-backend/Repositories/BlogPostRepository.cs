@@ -48,8 +48,9 @@ namespace findspot_backend.Repositories
         public IEnumerable<BlogPost> GetAll()
         {
             return _dbContext.BlogPosts
-            .Include(nameof(BlogPost.Tags))
-            .ToList();
+                .Include(bp => bp.TouristObject)
+                .Include(nameof(BlogPost.Tags))
+                .ToList();
         }
 
         public BlogPost Update(BlogPost blogPost)

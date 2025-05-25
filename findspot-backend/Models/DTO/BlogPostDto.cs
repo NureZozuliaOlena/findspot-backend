@@ -18,8 +18,6 @@ namespace findspot_backend.Models.DTO
         [JsonIgnore]
         public ICollection<ReviewDto>? Reviews { get; set; }
         public Guid? TouristObjectId { get; set; }
-
-        [JsonIgnore]
         public TouristObjectDto? TouristObject { get; set; }
 
         [JsonIgnore]

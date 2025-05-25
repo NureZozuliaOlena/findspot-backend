@@ -65,7 +65,7 @@ namespace findspot_backend.Repositories
                 existingBlogPost.FeaturedImageUrl = blogPost.FeaturedImageUrl;
                 existingBlogPost.PublishedDate = blogPost.PublishedDate;
                 existingBlogPost.UserId = blogPost.UserId;
-                existingBlogPost.TouristObject = blogPost.TouristObject;
+                existingBlogPost.TouristObjectId = blogPost.TouristObjectId;
 
                 if (blogPost.Tags != null && blogPost.Tags.Any())
                 {

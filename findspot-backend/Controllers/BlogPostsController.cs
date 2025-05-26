@@ -4,6 +4,7 @@ using findspot_backend.Models.DTO;
 using findspot_backend.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace findspot_backend.Controllers
 {
@@ -54,12 +55,16 @@ namespace findspot_backend.Controllers
         public IActionResult Create([FromBody] BlogPostDto blogPostDto)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
+
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrWhiteSpace(userIdClaim) || !Guid.TryParse(userIdClaim, out Guid userId))
+                return Unauthorized("Cannot determine user ID.");
 
             var blogPost = _mapper.Map<BlogPost>(blogPostDto);
             blogPost.Id = Guid.NewGuid();
+            blogPost.UserId = userId;
 
             if (blogPost.TouristObjectId.HasValue)
             {
@@ -72,13 +77,12 @@ namespace findspot_backend.Controllers
 
             if (blogPostDto.Tags != null && blogPostDto.Tags.Any())
             {
-                blogPost.Tags = blogPostDto.Tags
-                    .Select(dto => new Tag
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = dto.Name,
-                        BlogPostId = blogPost.Id
-                    }).ToList();
+                blogPost.Tags = blogPostDto.Tags.Select(dto => new Tag
+                {
+                    Id = Guid.NewGuid(),
+                    Name = dto.Name,
+                    BlogPostId = blogPost.Id
+                }).ToList();
             }
 
             var createdPost = _blogPostRepository.Add(blogPost);

@@ -80,6 +80,23 @@ namespace findspot_backend.Controllers
             return Ok(new { message = $"User lockout updated to: {duration}" });
         }
 
+        [Authorize(Roles = $"{StaticDetail.Role_Admin},{StaticDetail.Role_Moderator}")]
+        [HttpPut("{id}/verify")]
+        public async Task<IActionResult> SetVerificationStatus(string id, [FromQuery] bool value)
+        {
+            var user = await _userRepository.GetAsync(id);
+            if (user == null)
+                return NotFound();
+
+            user.AccountVerified = value;
+
+            var updatedUser = await _userRepository.UpdateAsync(user);
+            if (updatedUser == null)
+                return StatusCode(500, "Unable to update verification status.");
+
+            return Ok(new { message = $"User verification set to: {value}" });
+        }
+
         [HttpGet("{id}/roles")]
         public async Task<IActionResult> GetUserRoles(string id)
         {

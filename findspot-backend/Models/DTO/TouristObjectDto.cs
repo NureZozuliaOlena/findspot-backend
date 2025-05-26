@@ -4,7 +4,6 @@ namespace findspot_backend.Models.DTO
 {
     public class TouristObjectDto
     {
-        [JsonIgnore]
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }

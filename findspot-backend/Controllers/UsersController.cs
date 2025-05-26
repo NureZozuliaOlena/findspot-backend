@@ -42,10 +42,13 @@ namespace findspot_backend.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] UserDto userDto)
         {
-            if (id != userDto.Id)
-                return BadRequest("ID mismatch.");
+            var existingUser = await _userRepository.GetAsync(id);
+            if (existingUser == null)
+                return NotFound();
 
             var user = _mapper.Map<User>(userDto);
+            user.Id = id;
+
             var updatedUser = await _userRepository.UpdateAsync(user);
             if (updatedUser == null)
                 return NotFound();

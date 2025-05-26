@@ -63,12 +63,14 @@ namespace findspot_backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (id != dto.Id)
-                return BadRequest("ID mismatch");
+            var existing = _repository.Get(id);
+            if (existing == null)
+                return NotFound();
 
             var entity = _mapper.Map<TouristObject>(dto);
-            var updated = _repository.Update(entity);
+            entity.Id = id; 
 
+            var updated = _repository.Update(entity);
             if (updated == null)
                 return NotFound();
 

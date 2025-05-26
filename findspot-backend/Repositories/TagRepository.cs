@@ -1,5 +1,6 @@
 ﻿using findspot_backend.Data;
 using findspot_backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace findspot_backend.Repositories
 {
@@ -15,6 +16,14 @@ namespace findspot_backend.Repositories
         public IEnumerable<Tag> GetAll()
         {
             return _dbContext.Tags.ToList();
+        }
+
+        public IEnumerable<BlogPost> GetPostsByTag(string tagName)
+        {
+            return _dbContext.BlogPosts
+                .Include(bp => bp.Tags)
+                .Where(bp => bp.Tags.Any(t => t.Name.ToLower() == tagName.ToLower()))
+                .ToList();
         }
     }
 }

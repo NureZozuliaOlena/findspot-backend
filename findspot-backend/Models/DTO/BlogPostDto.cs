@@ -4,6 +4,7 @@ namespace findspot_backend.Models.DTO
 {
     public class BlogPostDto
     {
+        [JsonIgnore]
         public Guid Id { get; set; }
         public string PageTitle { get; set; }
         public string Content { get; set; }
@@ -12,7 +13,6 @@ namespace findspot_backend.Models.DTO
         public DateTime PublishedDate { get; set; }
         public Guid UserId { get; set; }
 
-        [JsonIgnore]
         public ICollection<TagDto>? Tags { get; set; }
 
         [JsonIgnore]

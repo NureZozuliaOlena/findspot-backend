@@ -59,6 +59,7 @@ namespace findspot_backend.Controllers
             }
 
             var blogPost = _mapper.Map<BlogPost>(blogPostDto);
+            blogPost.Id = Guid.NewGuid();
 
             if (blogPost.TouristObjectId.HasValue)
             {
@@ -67,6 +68,17 @@ namespace findspot_backend.Controllers
                 {
                     return NotFound($"TouristObject with ID {blogPost.TouristObjectId} not found.");
                 }
+            }
+
+            if (blogPostDto.Tags != null && blogPostDto.Tags.Any())
+            {
+                blogPost.Tags = blogPostDto.Tags
+                    .Select(dto => new Tag
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = dto.Name,
+                        BlogPostId = blogPost.Id
+                    }).ToList();
             }
 
             var createdPost = _blogPostRepository.Add(blogPost);

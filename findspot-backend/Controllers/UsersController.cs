@@ -2,6 +2,7 @@
 using findspot_backend.Models;
 using findspot_backend.Models.DTO;
 using findspot_backend.Repositories;
+using findspot_backend.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -39,6 +40,7 @@ namespace findspot_backend.Controllers
             return Ok(userDto);
         }
 
+        [Authorize(Roles = $"{StaticDetail.Role_Admin}")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] UserDto userDto)
         {
@@ -56,6 +58,7 @@ namespace findspot_backend.Controllers
             return Ok(_mapper.Map<UserDto>(updatedUser));
         }
 
+        [Authorize(Roles = $"{StaticDetail.Role_Admin}")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
@@ -66,6 +69,7 @@ namespace findspot_backend.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = $"{StaticDetail.Role_Admin},{StaticDetail.Role_Moderator}")]
         [HttpPost("lock-unlock/{id}")]
         public async Task<IActionResult> LockUnlock(string id, [FromQuery] string duration)
         {

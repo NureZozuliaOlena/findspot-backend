@@ -2,6 +2,7 @@
 using findspot_backend.Models;
 using findspot_backend.Models.DTO;
 using findspot_backend.Repositories;
+using findspot_backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -14,11 +15,16 @@ namespace findspot_backend.Controllers
     {
         private readonly IBlogPostRepository _blogPostRepository;
         private readonly IMapper _mapper;
+        private readonly IAuthorizationHelperService _authHelper;
 
-        public BlogPostsController(IBlogPostRepository blogPostRepository, IMapper mapper)
+        public BlogPostsController(
+            IBlogPostRepository blogPostRepository,
+            IMapper mapper,
+            IAuthorizationHelperService authHelper)
         {
             _blogPostRepository = blogPostRepository;
             _mapper = mapper;
+            _authHelper = authHelper;
         }
 
         [HttpGet("tourist-objects")]
@@ -93,7 +99,7 @@ namespace findspot_backend.Controllers
 
         [HttpPut("{id:guid}")]
         [Authorize]
-        public IActionResult Update(Guid id, [FromBody] BlogPostDto blogPostDto)
+        public async Task<IActionResult> Update(Guid id, [FromBody] BlogPostDto blogPostDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -102,17 +108,14 @@ namespace findspot_backend.Controllers
             if (existingPost == null)
                 return NotFound();
 
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrWhiteSpace(userIdClaim) || !Guid.TryParse(userIdClaim, out Guid userId))
-                return Unauthorized("Cannot determine user ID.");
-
-            if (existingPost.UserId != userId)
+            var (canEdit, _) = await _authHelper.CheckPermissionsAsync(existingPost.UserId.ToString(), User);
+            if (!canEdit)
                 return Forbid("You are not allowed to edit this post.");
 
             var updatedPost = _mapper.Map<BlogPost>(blogPostDto);
 
             updatedPost.Id = id;
-            updatedPost.UserId = userId;
+            updatedPost.UserId = existingPost.UserId;
 
             if (updatedPost.TouristObjectId.HasValue)
             {
@@ -129,13 +132,19 @@ namespace findspot_backend.Controllers
 
         [HttpDelete("{id:guid}")]
         [Authorize]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
+            var existingPost = _blogPostRepository.Get(id);
+            if (existingPost == null)
+                return NotFound();
+
+            var (_, canDelete) = await _authHelper.CheckPermissionsAsync(existingPost.UserId.ToString(), User);
+            if (!canDelete)
+                return Forbid("You are not allowed to delete this post.");
+
             var deleted = _blogPostRepository.Delete(id);
             if (!deleted)
-            {
                 return NotFound();
-            }
 
             return NoContent();
         }

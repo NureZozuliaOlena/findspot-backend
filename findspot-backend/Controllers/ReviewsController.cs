@@ -21,19 +21,22 @@ namespace findspot_backend.Controllers
         private readonly IAuthorizationHelperService _authService;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IMapper _mapper;
+        private readonly IUserBlogPostRepository _userBlogPostRepository;
 
         public ReviewsController(
             IReviewRepository reviewRepository,
             IBlogPostRepository blogPostRepository,
             IAuthorizationHelperService authService,
             UserManager<IdentityUser> userManager,
-            IMapper mapper)
+            IMapper mapper,
+            IUserBlogPostRepository userBlogPostRepository)
         {
             _reviewRepository = reviewRepository;
             _blogPostRepository = blogPostRepository;
             _authService = authService;
             _userManager = userManager;
             _mapper = mapper;
+            _userBlogPostRepository = userBlogPostRepository;
         }
 
         [HttpPost("{blogPostId}")]
@@ -47,6 +50,9 @@ namespace findspot_backend.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
                 return Unauthorized();
+
+            if (!_userBlogPostRepository.HasVisited(blogPostId, user.Id))
+                return Forbid("You can only leave a review if you have visited this place.");
 
             var review = _mapper.Map<Review>(reviewDto);
             review.Id = Guid.NewGuid();

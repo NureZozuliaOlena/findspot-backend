@@ -1,7 +1,10 @@
-﻿namespace findspot_backend.Models.DTO
+﻿using System.Text.Json.Serialization;
+
+namespace findspot_backend.Models.DTO
 {
     public class ReviewDto
     {
+        [JsonIgnore]
         public Guid Id { get; set; }
         public string Content { get; set; }
         public int Rating { get; set; }

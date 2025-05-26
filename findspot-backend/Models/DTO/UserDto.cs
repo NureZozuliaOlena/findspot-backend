@@ -1,7 +1,10 @@
-﻿namespace findspot_backend.Models.DTO
+﻿using System.Text.Json.Serialization;
+
+namespace findspot_backend.Models.DTO
 {
     public class UserDto
     {
+        [JsonIgnore]
         public string Id { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }

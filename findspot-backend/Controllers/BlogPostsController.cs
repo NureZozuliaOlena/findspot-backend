@@ -96,30 +96,29 @@ namespace findspot_backend.Controllers
         public IActionResult Update(Guid id, [FromBody] BlogPostDto blogPostDto)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
-
-            if (id != blogPostDto.Id)
-            {
-                return BadRequest("Mismatched blog post ID.");
-            }
 
             var existingPost = _blogPostRepository.Get(id);
             if (existingPost == null)
-            {
                 return NotFound();
-            }
+
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrWhiteSpace(userIdClaim) || !Guid.TryParse(userIdClaim, out Guid userId))
+                return Unauthorized("Cannot determine user ID.");
+
+            if (existingPost.UserId != userId)
+                return Forbid("You are not allowed to edit this post.");
 
             var updatedPost = _mapper.Map<BlogPost>(blogPostDto);
+
+            updatedPost.Id = id;
+            updatedPost.UserId = userId;
 
             if (updatedPost.TouristObjectId.HasValue)
             {
                 var allObjects = _blogPostRepository.GetAllTouristObjects();
                 if (!allObjects.Any(to => to.Id == updatedPost.TouristObjectId))
-                {
                     return NotFound($"TouristObject with ID {updatedPost.TouristObjectId} not found.");
-                }
             }
 
             var savedPost = _blogPostRepository.Update(updatedPost);

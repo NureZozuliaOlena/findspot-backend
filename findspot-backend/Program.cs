@@ -4,6 +4,7 @@ using findspot_backend.Mappings;
 using findspot_backend.Models;
 using findspot_backend.Repositories;
 using findspot_backend.Repository;
+using findspot_backend.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +33,7 @@ namespace findspot_backend
             builder.Services.AddScoped<IImageRepository, ImageRepository>();
             builder.Services.AddScoped<ITagRepository, TagRepository>();
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+            builder.Services.AddScoped<IAuthorizationHelperService, AuthorizationHelperService>();
 
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 

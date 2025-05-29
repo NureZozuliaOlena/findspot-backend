@@ -19,7 +19,7 @@ namespace findspot_backend.Controllers
         private readonly IReviewRepository _reviewRepository;
         private readonly IBlogPostRepository _blogPostRepository;
         private readonly IAuthorizationHelperService _authService;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
         private readonly IUserBlogPostRepository _userBlogPostRepository;
 
@@ -27,7 +27,7 @@ namespace findspot_backend.Controllers
             IReviewRepository reviewRepository,
             IBlogPostRepository blogPostRepository,
             IAuthorizationHelperService authService,
-            UserManager<IdentityUser> userManager,
+            UserManager<User> userManager,
             IMapper mapper,
             IUserBlogPostRepository userBlogPostRepository)
         {

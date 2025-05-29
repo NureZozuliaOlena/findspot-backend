@@ -121,5 +121,10 @@ namespace findspot_backend.Repositories
 
             return user;
         }
+
+        public async Task<IdentityResult> ChangePasswordAsync(User user, string currentPassword, string newPassword)
+        {
+            return await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+        }
     }
 }

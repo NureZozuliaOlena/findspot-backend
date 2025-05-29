@@ -14,5 +14,6 @@ namespace findspot_backend.Repositories
         Task<IdentityResult> AddToRolesAsync(User user, IEnumerable<string> roles);
         Task<IdentityResult> RemoveFromRolesAsync(User user, IEnumerable<string> roles);
         Task<User> LockUnlock(string userId, string banDuration);
+        Task<IdentityResult> ChangePasswordAsync(User user, string currentPassword, string newPassword);
     }
 }

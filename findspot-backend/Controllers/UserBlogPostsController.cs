@@ -1,4 +1,5 @@
 ﻿using findspot_backend.Models;
+using findspot_backend.Models.DTO;
 using findspot_backend.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,11 +20,18 @@ namespace findspot_backend.Controllers
         }
 
         [HttpPost("add")]
-        public IActionResult AddToList([FromBody] UserBlogPost model)
+        public IActionResult AddToList([FromBody] UserBlogPostDto dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null || userId != model.UserId)
+            if (userId == null || userId != dto.UserId)
                 return Forbid();
+
+            var model = new UserBlogPost
+            {
+                UserId = dto.UserId,
+                BlogPostId = dto.BlogPostId,
+                Status = dto.Status
+            };
 
             var added = _repository.Add(model);
             return Ok(added);

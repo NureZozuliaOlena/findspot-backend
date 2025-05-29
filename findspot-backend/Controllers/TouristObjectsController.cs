@@ -22,6 +22,21 @@ namespace findspot_backend.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("countries")]
+        public IActionResult GetUniqueCountries()
+        {
+            var touristObjects = _repository.GetAll();
+
+            var uniqueCountries = touristObjects
+                .Where(to => !string.IsNullOrWhiteSpace(to.Country))
+                .Select(to => to.Country.Trim())
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(c => c)
+                .ToList();
+
+            return Ok(uniqueCountries);
+        }
+
         [HttpGet]
         public IActionResult GetAll()
         {

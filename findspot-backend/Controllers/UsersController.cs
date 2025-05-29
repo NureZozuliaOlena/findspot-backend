@@ -142,5 +142,51 @@ namespace findspot_backend.Controllers
             var roles = await _userRepository.GetAllRolesAsync();
             return Ok(roles);
         }
+
+        [Authorize]
+        [HttpPut("me")]
+        public async Task<IActionResult> UpdateOwnProfile([FromBody] UserDto userDto)
+        {
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+                return Unauthorized();
+
+            var existingUser = await _userRepository.GetAsync(userId);
+            if (existingUser == null)
+                return NotFound();
+
+            existingUser.UserName = userDto.UserName;
+            existingUser.Email = userDto.Email;
+            existingUser.AvatarImageUrl = userDto.AvatarImageUrl;
+
+            var updatedUser = await _userRepository.UpdateAsync(existingUser);
+            if (updatedUser == null)
+                return StatusCode(500, "Unable to update profile.");
+
+            return Ok(_mapper.Map<UserDto>(updatedUser));
+        }
+
+        [Authorize]
+        [HttpPost("me/change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (model.NewPassword != model.ConfirmNewPassword)
+                return BadRequest(new { message = "New password and confirmation do not match." });
+
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var user = await _userRepository.GetAsync(userId);
+            if (user == null)
+                return Unauthorized();
+
+            var result = await _userRepository.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+
+            return Ok(new { message = "Password changed successfully." });
+        }
+
     }
 }

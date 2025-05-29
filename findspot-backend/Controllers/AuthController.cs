@@ -58,9 +58,17 @@ namespace findspot_backend.Controllers
 
             await _signInManager.SignInAsync(user, isPersistent: false);
 
-            return Ok(new { message = "Logged in successfully" });
-        }
+            var roles = await _userManager.GetRolesAsync(user);
 
+            return Ok(new
+            {
+                message = "Logged in successfully",
+                userId = user.Id,
+                userName = user.UserName,
+                email = user.Email,
+                roles = roles
+            });
+        }
 
         [HttpPost("logout")]
         [Authorize]

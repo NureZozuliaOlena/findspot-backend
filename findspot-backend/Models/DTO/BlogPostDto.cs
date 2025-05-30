@@ -14,6 +14,7 @@ namespace findspot_backend.Models.DTO
         public Guid UserId { get; set; }
 
         public ICollection<TagDto>? Tags { get; set; }
+        public double? AverageRating { get; set; }
 
         [JsonIgnore]
         public ICollection<ReviewDto>? Reviews { get; set; }

@@ -40,6 +40,12 @@ namespace findspot_backend.Controllers
         {
             var blogPosts = _blogPostRepository.GetAll();
             var blogPostDtos = _mapper.Map<List<BlogPostDto>>(blogPosts);
+
+            foreach (var dto in blogPostDtos)
+            {
+                dto.AverageRating = _blogPostRepository.GetAverageRating(dto.Id);
+            }
+
             return Ok(blogPostDtos);
         }
 
@@ -53,6 +59,8 @@ namespace findspot_backend.Controllers
             }
 
             var blogPostDto = _mapper.Map<BlogPostDto>(blogPost);
+            blogPostDto.AverageRating = _blogPostRepository.GetAverageRating(blogPost.Id);
+
             return Ok(blogPostDto);
         }
 

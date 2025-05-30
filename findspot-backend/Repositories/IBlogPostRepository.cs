@@ -11,5 +11,6 @@ namespace findspot_backend.Repositories
         BlogPost Update(BlogPost blogPost);
         bool Delete(Guid id);
         IEnumerable<TouristObject> GetAllTouristObjects();
+        double? GetAverageRating(Guid blogPostId);
     }
 }

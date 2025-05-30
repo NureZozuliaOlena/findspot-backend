@@ -97,5 +97,15 @@ namespace findspot_backend.Repositories
                 .Include(nameof(BlogPost.Tags))
                 .FirstOrDefault();
         }
+
+        public double? GetAverageRating(Guid blogPostId)
+        {
+            var reviews = _dbContext.Reviews.Where(r => r.BlogPostId == blogPostId).ToList();
+
+            if (!reviews.Any())
+                return null;
+
+            return reviews.Average(r => r.Rating);
+        }
     }
 }

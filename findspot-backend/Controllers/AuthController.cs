@@ -79,11 +79,23 @@ namespace findspot_backend.Controllers
         }
 
         [HttpGet("status")]
-        public IActionResult Status()
+        public async Task<IActionResult> Status()
         {
             if (User.Identity.IsAuthenticated)
             {
-                return Ok(new { isLoggedIn = true, email = User.Identity.Name });
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return Ok(new { isLoggedIn = false });
+                }
+
+                return Ok(new
+                {
+                    isLoggedIn = true,
+                    id = user.Id,
+                    userName = user.UserName,
+                    email = user.Email
+                });
             }
 
             return Ok(new { isLoggedIn = false });

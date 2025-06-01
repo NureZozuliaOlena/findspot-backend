@@ -1,5 +1,6 @@
 ﻿using findspot_backend.Models;
 using findspot_backend.Models.DTO;
+using findspot_backend.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -34,9 +35,20 @@ namespace findspot_backend.Controllers
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
-
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
+
+            var roleExists = await _userManager.IsInRoleAsync(user, StaticDetail.Role_User);
+            if (!roleExists)
+            {
+                var roleManager = HttpContext.RequestServices.GetRequiredService<RoleManager<IdentityRole>>();
+                if (!await roleManager.RoleExistsAsync(StaticDetail.Role_User))
+                {
+                    await roleManager.CreateAsync(new IdentityRole(StaticDetail.Role_User));
+                }
+
+                await _userManager.AddToRoleAsync(user, StaticDetail.Role_User);
+            }
 
             return Ok(new { message = "User registered successfully" });
         }

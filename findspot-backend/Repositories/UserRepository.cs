@@ -26,6 +26,21 @@ namespace findspot_backend.Repositories
             return await _userManager.Users.FirstOrDefaultAsync(to => to.Id == userId);
         }
 
+        public async Task<IdentityResult> CreateUserAsync(User user, string password, string role)
+        {
+            var result = await _userManager.CreateAsync(user, password);
+            if (!result.Succeeded) return result;
+
+            if (!await _roleManager.RoleExistsAsync(role))
+            {
+                await _roleManager.CreateAsync(new IdentityRole(role));
+            }
+
+            await _userManager.AddToRoleAsync(user, role);
+
+            return result;
+        }
+
         public async Task<bool> DeleteAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);

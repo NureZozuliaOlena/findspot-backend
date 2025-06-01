@@ -41,6 +41,36 @@ namespace findspot_backend.Controllers
         }
 
         [Authorize(Roles = $"{StaticDetail.Role_Admin}")]
+        [HttpPost]
+        public async Task<IActionResult> Add([FromBody] UserCreateDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var newUser = new User
+            {
+                UserName = dto.UserName,
+                Email = dto.Email,
+                AvatarImageUrl = dto.AvatarImageUrl,
+                AccountVerified = false
+            };
+
+            var result = await _userRepository.CreateUserAsync(newUser, dto.Password, dto.Role);
+
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+
+            return Ok(new UserDto
+            {
+                Id = newUser.Id,
+                UserName = newUser.UserName,
+                Email = newUser.Email,
+                AvatarImageUrl = newUser.AvatarImageUrl,
+                AccountVerified = newUser.AccountVerified
+            });
+        }
+
+        [Authorize(Roles = $"{StaticDetail.Role_Admin}")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] UserDto userDto)
         {

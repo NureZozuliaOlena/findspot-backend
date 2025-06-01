@@ -7,6 +7,7 @@ namespace findspot_backend.Repositories
     {
         Task<IEnumerable<User>> GetAllAsync();
         Task<User> GetAsync(string userId);
+        Task<IdentityResult> CreateUserAsync(User user, string password, string role);
         Task<User> UpdateAsync(User user);
         Task<bool> DeleteAsync(string userId);
         Task<IList<string>> GetAllRolesAsync();

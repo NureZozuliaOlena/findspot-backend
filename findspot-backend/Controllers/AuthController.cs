@@ -88,13 +88,14 @@ namespace findspot_backend.Controllers
                 {
                     return Ok(new { isLoggedIn = false });
                 }
-
+                var roles = await _userManager.GetRolesAsync(user);
                 return Ok(new
                 {
                     isLoggedIn = true,
                     id = user.Id,
                     userName = user.UserName,
-                    email = user.Email
+                    email = user.Email,
+                    roles = roles
                 });
             }
 

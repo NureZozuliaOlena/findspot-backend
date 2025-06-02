@@ -18,6 +18,38 @@ namespace findspot_backend.Repositories
             return _dbContext.Tags.ToList();
         }
 
+        public Tag GetById(Guid id)
+        {
+            return _dbContext.Tags.Find(id);
+        }
+
+        public Tag GetByName(string tagName)
+        {
+            return _dbContext.Tags.FirstOrDefault(t => t.Name == tagName);
+        }
+
+        public void Add(Tag tag)
+        {
+            _dbContext.Tags.Add(tag);
+            _dbContext.SaveChanges();
+        }
+
+        public void Update(Tag tag)
+        {
+            _dbContext.Tags.Update(tag);
+            _dbContext.SaveChanges();
+        }
+
+        public void Delete(Guid id)
+        {
+            var tag = _dbContext.Tags.Find(id);
+            if (tag != null)
+            {
+                _dbContext.Tags.Remove(tag);
+                _dbContext.SaveChanges();
+            }
+        }
+
         public IEnumerable<BlogPost> GetPostsByTag(string tagName)
         {
             return _dbContext.BlogPosts

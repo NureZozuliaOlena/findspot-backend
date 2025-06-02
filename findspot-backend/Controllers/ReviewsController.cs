@@ -41,7 +41,7 @@ namespace findspot_backend.Controllers
 
         [HttpPost("{blogPostId}")]
         [Authorize(Roles = $"{StaticDetail.Role_User},{StaticDetail.Role_Admin},{StaticDetail.Role_Moderator}")]
-        public async Task<IActionResult> AddReview(Guid blogPostId, [FromBody] ReviewDto reviewDto)
+        public async Task<IActionResult> AddReview(Guid blogPostId, [FromBody] ReviewCreateDto reviewCreateDto)
         {
             var blog = _blogPostRepository.Get(blogPostId);
             if (blog == null)
@@ -54,15 +54,38 @@ namespace findspot_backend.Controllers
             if (!_userBlogPostRepository.HasVisited(blogPostId, user.Id))
                 return Forbid("You can only leave a review if you have visited this place.");
 
-            var review = _mapper.Map<Review>(reviewDto);
-            review.Id = Guid.NewGuid();
-            review.BlogPostId = blogPostId;
-            review.UserId = user.Id;
-            review.DateAdded = DateTime.UtcNow;
+            var review = new Review
+            {
+                Id = Guid.NewGuid(),
+                Content = reviewCreateDto.Content,
+                Rating = reviewCreateDto.Rating,
+                BlogPostId = blogPostId,
+                UserId = user.Id,
+                DateAdded = DateTime.UtcNow,
+                FeaturedImageUrl = reviewCreateDto.FeaturedImageUrl
+            };
 
             _reviewRepository.Add(review);
 
-            return Ok(_mapper.Map<ReviewDto>(review));
+            var responseDto = new ReviewResponseDto
+            {
+                Id = review.Id,
+                Content = review.Content,
+                Rating = review.Rating,
+                DateAdded = review.DateAdded,
+                UserName = user.UserName,
+                FeaturedImageUrl = review.FeaturedImageUrl,
+                BlogPost = new BlogPostSummaryDto
+                {
+                    Id = blog.Id,
+                    PageTitle = blog.PageTitle,
+                    ShortDescription = blog.ShortDescription,
+                    FeaturedImageUrl = blog.FeaturedImageUrl,
+                    PublishedDate = blog.PublishedDate
+                }
+            };
+
+            return Ok(responseDto);
         }
 
         [HttpPut("{id}")]
@@ -83,7 +106,29 @@ namespace findspot_backend.Controllers
 
             _reviewRepository.Update(existing);
 
-            return Ok(_mapper.Map<ReviewDto>(existing));
+            var blog = _blogPostRepository.Get(existing.BlogPostId);
+
+            var user = await _userManager.FindByIdAsync(existing.UserId);
+
+            var responseDto = new ReviewResponseDto
+            {
+                Id = existing.Id,
+                Content = existing.Content,
+                Rating = existing.Rating,
+                DateAdded = existing.DateAdded,
+                UserName = user?.UserName,
+                FeaturedImageUrl = existing.FeaturedImageUrl,
+                BlogPost = blog == null ? null : new BlogPostSummaryDto
+                {
+                    Id = blog.Id,
+                    PageTitle = blog.PageTitle,
+                    ShortDescription = blog.ShortDescription,
+                    FeaturedImageUrl = blog.FeaturedImageUrl,
+                    PublishedDate = blog.PublishedDate
+                }
+            };
+
+            return Ok(responseDto);
         }
 
         [HttpDelete("{id}")]
@@ -106,8 +151,33 @@ namespace findspot_backend.Controllers
         public IActionResult GetReviewsForBlogPost(Guid blogPostId)
         {
             var reviews = _reviewRepository.GetByBlogPostId(blogPostId);
-            var dtos = _mapper.Map<IEnumerable<ReviewDto>>(reviews);
-            return Ok(dtos);
+
+            var blog = _blogPostRepository.Get(blogPostId);
+
+            var reviewResponseDtos = reviews.Select(review =>
+            {
+                var user = _userManager.FindByIdAsync(review.UserId).Result;
+
+                return new ReviewResponseDto
+                {
+                    Id = review.Id,
+                    Content = review.Content,
+                    Rating = review.Rating,
+                    DateAdded = review.DateAdded,
+                    UserName = user?.UserName,
+                    FeaturedImageUrl = review.FeaturedImageUrl,
+                    BlogPost = blog == null ? null : new BlogPostSummaryDto
+                    {
+                        Id = blog.Id,
+                        PageTitle = blog.PageTitle,
+                        ShortDescription = blog.ShortDescription,
+                        FeaturedImageUrl = blog.FeaturedImageUrl,
+                        PublishedDate = blog.PublishedDate
+                    }
+                };
+            });
+
+            return Ok(reviewResponseDtos);
         }
 
         [HttpGet("user/{userId}")]
@@ -115,8 +185,31 @@ namespace findspot_backend.Controllers
         public IActionResult GetReviewsByUser(string userId)
         {
             var reviews = _reviewRepository.GetAllByUserId(userId);
-            var dtos = _mapper.Map<IEnumerable<ReviewDto>>(reviews);
-            return Ok(dtos);
+
+            var reviewResponseDtos = reviews.Select(review =>
+            {
+                var blog = _blogPostRepository.Get(review.BlogPostId);
+
+                return new ReviewResponseDto
+                {
+                    Id = review.Id,
+                    Content = review.Content,
+                    Rating = review.Rating,
+                    DateAdded = review.DateAdded,
+                    UserName = null,
+                    FeaturedImageUrl = review.FeaturedImageUrl,
+                    BlogPost = blog == null ? null : new BlogPostSummaryDto
+                    {
+                        Id = blog.Id,
+                        PageTitle = blog.PageTitle,
+                        ShortDescription = blog.ShortDescription,
+                        FeaturedImageUrl = blog.FeaturedImageUrl,
+                        PublishedDate = blog.PublishedDate
+                    }
+                };
+            });
+
+            return Ok(reviewResponseDtos);
         }
     }
 }

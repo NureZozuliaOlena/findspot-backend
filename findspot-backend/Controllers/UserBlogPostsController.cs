@@ -20,7 +20,7 @@ namespace findspot_backend.Controllers
         }
 
         [HttpPost("add")]
-        public IActionResult AddToList([FromBody] UserBlogPostDto dto)
+        public IActionResult AddToList([FromBody] UserBlogPostCreateDto dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null || userId != dto.UserId)
@@ -58,8 +58,24 @@ namespace findspot_backend.Controllers
             if (userId == null)
                 return Forbid();
 
-            var list = _repository.GetAllUserBlogs(userId);
-            return Ok(list);
+            var userBlogPosts = _repository.GetAllUserBlogs(userId);
+
+            var dtoList = userBlogPosts.Select(ubp => new UserBlogPostDto
+            {
+                UserId = ubp.UserId,
+                Status = ubp.Status,
+                BlogPostId = ubp.BlogPostId,
+                BlogPost = new BlogPostSummaryDto
+                {
+                    Id = ubp.BlogPost.Id,
+                    PageTitle = ubp.BlogPost.PageTitle,
+                    ShortDescription = ubp.BlogPost.ShortDescription,
+                    FeaturedImageUrl = ubp.BlogPost.FeaturedImageUrl,
+                    PublishedDate = ubp.BlogPost.PublishedDate
+                }
+            }).ToList();
+
+            return Ok(dtoList);
         }
 
         [HttpGet("visited/{blogPostId}")]

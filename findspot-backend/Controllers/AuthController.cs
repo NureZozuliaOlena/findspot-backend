@@ -107,7 +107,8 @@ namespace findspot_backend.Controllers
                     id = user.Id,
                     userName = user.UserName,
                     email = user.Email,
-                    roles = roles
+                    roles = roles,
+                    accountVerified = user.AccountVerified
                 });
             }
 

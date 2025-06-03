@@ -10,7 +10,6 @@ namespace findspot_backend.Models.DTO
         public string ShortDescription { get; set; }
         public string FeaturedImageUrl { get; set; }
         public DateTime PublishedDate { get; set; }
-        [JsonIgnore]
         public Guid UserId { get; set; }
 
         public ICollection<TagDto>? Tags { get; set; }

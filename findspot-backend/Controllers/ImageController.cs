@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using findspot_backend.Repository;
-using findspot_backend.Utility;
 
 namespace findspot_backend.Controllers
 {

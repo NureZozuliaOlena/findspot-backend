@@ -6,7 +6,6 @@ using findspot_backend.Repositories;
 using findspot_backend.Repository;
 using findspot_backend.Services;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace findspot_backend

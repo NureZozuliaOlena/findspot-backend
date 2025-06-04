@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace findspot_backend.Models.DTO
+﻿namespace findspot_backend.Models.DTO
 {
     public class UserDto
     {

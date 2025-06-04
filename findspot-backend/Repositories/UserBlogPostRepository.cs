@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using findspot_backend.Data;
 using findspot_backend.Models;
-using findspot_backend.Models.DTO;
 
 namespace findspot_backend.Repositories
 {

@@ -40,7 +40,7 @@ namespace findspot_backend.Controllers
         }
 
         [HttpPost("{blogPostId}")]
-        [Authorize(Roles = $"{StaticDetail.Role_User},{StaticDetail.Role_Admin},{StaticDetail.Role_Moderator}")]
+        [Authorize]
         public async Task<IActionResult> AddReview(Guid blogPostId, [FromBody] ReviewCreateDto reviewCreateDto)
         {
             var blog = _blogPostRepository.Get(blogPostId);
@@ -89,7 +89,7 @@ namespace findspot_backend.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = $"{StaticDetail.Role_User},{StaticDetail.Role_Admin},{StaticDetail.Role_Moderator}")]
+        [Authorize]
         public async Task<IActionResult> EditReview(Guid id, [FromBody] ReviewDto reviewDto)
         {
             var existing = _reviewRepository.GetById(id);
@@ -132,7 +132,7 @@ namespace findspot_backend.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = $"{StaticDetail.Role_User},{StaticDetail.Role_Admin},{StaticDetail.Role_Moderator}")]
+        [Authorize]
         public async Task<IActionResult> DeleteReview(Guid id)
         {
             var review = _reviewRepository.GetById(id);

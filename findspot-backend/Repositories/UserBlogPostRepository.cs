@@ -38,8 +38,9 @@ namespace findspot_backend.Repositories
         public IEnumerable<UserBlogPost> GetAllUserBlogs(string userId)
         {
             return _context.UserBlogPosts
-                .Where(ubp => ubp.UserId == userId)
                 .Include(ubp => ubp.BlogPost)
+                .ThenInclude(bp => bp.TouristObject)
+                .Where(ubp => ubp.UserId == userId)
                 .ToList();
         }
 

@@ -71,7 +71,8 @@ namespace findspot_backend.Controllers
                     PageTitle = ubp.BlogPost.PageTitle,
                     ShortDescription = ubp.BlogPost.ShortDescription,
                     FeaturedImageUrl = ubp.BlogPost.FeaturedImageUrl,
-                    PublishedDate = ubp.BlogPost.PublishedDate
+                    PublishedDate = ubp.BlogPost.PublishedDate,
+                    TouristObjectTitle = ubp.BlogPost.TouristObject?.Name
                 }
             }).ToList();
 

@@ -7,5 +7,6 @@
         public string ShortDescription { get; set; }
         public string? FeaturedImageUrl { get; set; }
         public DateTime PublishedDate { get; set; }
+        public string? TouristObjectTitle { get; set; }
     }
 }

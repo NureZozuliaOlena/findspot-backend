@@ -63,11 +63,17 @@ namespace findspot_backend.Controllers
             if (user == null)
                 return Unauthorized(new { message = "Invalid login attempt" });
 
-            var passwordValid = await _userManager.CheckPasswordAsync(user, model.Password);
-            if (!passwordValid)
-                return Unauthorized(new { message = "Invalid login attempt" });
+            var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, isPersistent: false, lockoutOnFailure: true);
 
-            await _signInManager.SignInAsync(user, isPersistent: false);
+            if (result.IsLockedOut)
+            {
+                return Unauthorized(new { message = "User account is locked out." });
+            }
+
+            if (!result.Succeeded)
+            {
+                return Unauthorized(new { message = "Invalid login attempt" });
+            }
 
             var roles = await _userManager.GetRolesAsync(user);
 

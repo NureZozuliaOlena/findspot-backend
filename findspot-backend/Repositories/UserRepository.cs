@@ -105,32 +105,33 @@ namespace findspot_backend.Repositories
                 return null;
             }
 
-            DateTime lockoutEndDate;
+            DateTimeOffset? lockoutEndDate;
 
             switch (banDuration)
             {
                 case "Unban":
-                    lockoutEndDate = DateTime.UtcNow;
+                    lockoutEndDate = null;
                     break;
                 case "Day":
-                    lockoutEndDate = DateTime.UtcNow.AddDays(1);
+                    lockoutEndDate = DateTimeOffset.UtcNow.AddDays(1);
                     break;
                 case "Week":
-                    lockoutEndDate = DateTime.UtcNow.AddDays(7);
+                    lockoutEndDate = DateTimeOffset.UtcNow.AddDays(7);
                     break;
                 case "Month":
-                    lockoutEndDate = DateTime.UtcNow.AddMonths(1);
+                    lockoutEndDate = DateTimeOffset.UtcNow.AddMonths(1);
                     break;
                 case "Year":
-                    lockoutEndDate = DateTime.UtcNow.AddYears(1);
+                    lockoutEndDate = DateTimeOffset.UtcNow.AddYears(1);
                     break;
                 case "Forever":
-                    lockoutEndDate = DateTime.UtcNow.AddYears(1000);
+                    lockoutEndDate = DateTimeOffset.UtcNow.AddYears(1000);
                     break;
                 default:
-                    lockoutEndDate = DateTime.UtcNow;
+                    lockoutEndDate = null;
                     break;
             }
+
             await _userManager.SetLockoutEndDateAsync(user, lockoutEndDate);
 
             return user;

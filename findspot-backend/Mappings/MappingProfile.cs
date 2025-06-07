@@ -12,7 +12,9 @@ namespace findspot_backend.Mappings
             CreateMap<Review, ReviewDto>().ReverseMap();
             CreateMap<Tag, TagDto>().ReverseMap();
             CreateMap<TouristObject, TouristObjectDto>().ReverseMap();
-            CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<User, UserDto>()
+                .ForMember(dest => dest.IsLockedOut, opt =>
+                    opt.MapFrom(src => src.LockoutEnd != null && src.LockoutEnd > DateTimeOffset.UtcNow));
             CreateMap<UserBlogPost, UserBlogPostDto>().ReverseMap();
         }
     }

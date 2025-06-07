@@ -7,6 +7,7 @@
         public string Email { get; set; }
         public string? AvatarImageUrl { get; set; }
         public bool AccountVerified { get; set; }
+        public bool IsLockedOut { get; set; }
         public ICollection<UserBlogPostDto>? UserBlogPosts { get; set; }
     }
 }

@@ -15,6 +15,7 @@ namespace findspot_backend.Mappings
             CreateMap<User, UserDto>()
                 .ForMember(dest => dest.IsLockedOut, opt =>
                     opt.MapFrom(src => src.LockoutEnd != null && src.LockoutEnd > DateTimeOffset.UtcNow));
+            CreateMap<UserDto, User>();
             CreateMap<UserBlogPost, UserBlogPostDto>().ReverseMap();
         }
     }

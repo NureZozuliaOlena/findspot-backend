@@ -26,6 +26,10 @@ namespace findspot_backend.Controllers
             if (userId == null || userId != dto.UserId)
                 return Forbid();
 
+            var exists = _repository.Exists(dto.UserId, dto.BlogPostId);
+            if (exists)
+                return Conflict(new { message = "This blog post is already in the user's list." });
+
             var model = new UserBlogPost
             {
                 UserId = dto.UserId,

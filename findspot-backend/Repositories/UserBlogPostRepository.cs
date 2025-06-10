@@ -49,5 +49,10 @@ namespace findspot_backend.Repositories
             return _context.UserBlogPosts
                 .Any(ubp => ubp.UserId == userId && ubp.BlogPostId == blogId && ubp.Status == "visited");
         }
+
+        public bool Exists(string userId, Guid blogPostId)
+        {
+            return _context.UserBlogPosts.Any(ubp => ubp.UserId == userId && ubp.BlogPostId == blogPostId);
+        }
     }
 }

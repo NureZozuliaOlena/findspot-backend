@@ -8,5 +8,6 @@ namespace findspot_backend.Repositories
         public UserBlogPost Delete(Guid blogId, string userId);
         IEnumerable<UserBlogPost> GetAllUserBlogs(string userId);
         bool HasVisited(Guid blogId, string userId);
+        bool Exists(string userId, Guid blogPostId);
     }
 }

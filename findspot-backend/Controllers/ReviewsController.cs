@@ -150,7 +150,6 @@ namespace findspot_backend.Controllers
         public IActionResult GetReviewsForBlogPost(Guid blogPostId)
         {
             var reviews = _reviewRepository.GetByBlogPostId(blogPostId);
-
             var blog = _blogPostRepository.Get(blogPostId);
 
             var reviewResponseDtos = reviews.Select(review =>
@@ -163,6 +162,7 @@ namespace findspot_backend.Controllers
                     Content = review.Content,
                     Rating = review.Rating,
                     DateAdded = review.DateAdded,
+                    UserId = review.UserId,
                     UserName = user?.UserName,
                     FeaturedImageUrl = review.FeaturedImageUrl,
                     BlogPost = blog == null ? null : new BlogPostSummaryDto

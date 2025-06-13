@@ -89,7 +89,7 @@ namespace findspot_backend.Controllers
 
         [HttpPut("{id}")]
         [Authorize]
-        public async Task<IActionResult> EditReview(Guid id, [FromBody] ReviewDto reviewDto)
+        public async Task<IActionResult> EditReview(Guid id, [FromBody] ReviewCreateDto reviewDto)
         {
             var existing = _reviewRepository.GetById(id);
             if (existing == null)
@@ -106,7 +106,6 @@ namespace findspot_backend.Controllers
             _reviewRepository.Update(existing);
 
             var blog = _blogPostRepository.Get(existing.BlogPostId);
-
             var user = await _userManager.FindByIdAsync(existing.UserId);
 
             var responseDto = new ReviewResponseDto

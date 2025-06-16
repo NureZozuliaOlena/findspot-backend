@@ -70,7 +70,7 @@ namespace findspot_backend.Controllers
             });
         }
 
-        [Authorize(Roles = $"{StaticDetail.Role_Admin}")]
+        [Authorize(Roles = $"{StaticDetail.Role_Admin},{StaticDetail.Role_Moderator}")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] UserDto userDto)
         {

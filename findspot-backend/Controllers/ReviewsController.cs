@@ -51,7 +51,7 @@ namespace findspot_backend.Controllers
                 return Unauthorized();
 
             if (!_userBlogPostRepository.HasVisited(blogPostId, user.Id))
-                return Forbid("You can only leave a review if you have visited this place.");
+                return StatusCode(403, new { message = "You can only leave a review if you have visited this place." });
 
             var review = new Review
             {

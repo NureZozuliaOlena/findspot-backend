@@ -1,8 +1,12 @@
-﻿namespace findspot_backend.Models.DTO
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace findspot_backend.Models.DTO
 {
     public class ReviewDto
     {
         public Guid Id { get; set; }
+
+        [MaxLength(1500)]
         public string Content { get; set; }
         public int Rating { get; set; }
         public DateTime DateAdded { get; set; }

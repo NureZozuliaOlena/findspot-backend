@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using findspot_backend.Data;
 
@@ -11,9 +12,11 @@ using findspot_backend.Data;
 namespace findspot_backend.Migrations
 {
     [DbContext(typeof(FindSpotDbContext))]
-    partial class FindSpotDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250619112407_update-review-model")]
+    partial class updatereviewmodel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

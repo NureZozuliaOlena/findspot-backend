@@ -1,10 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace findspot_backend.Models
 {
     public class Review
     {
         public Guid Id { get; set; }
+
+        [MaxLength(1500)]
         public string Content { get; set; }
         public int Rating { get; set; }
         public DateTime DateAdded { get; set; }
